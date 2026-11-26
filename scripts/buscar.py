@@ -101,6 +101,7 @@ def autohero(marca, modelo, pref):
             partes = html.unescape(al.group(1)).split(" - ") if al else []
             img = re.search(r'<img src="([^"]+)"', c)
             href = re.search(r'href="(/es/[^"]+/id/[^"]+)"', t[t.find(idm.group(1)) - 400:t.find(idm.group(1)) + 50])
+            precios = [p for p in precios if p and p > 3000]
             fin = precios[0] if precios else None
             contado = fin
             if "Al contado" in txt:
