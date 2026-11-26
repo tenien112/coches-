@@ -33,16 +33,18 @@ def norm_fuel(f):
     return (f or "?").capitalize()
 
 def motor_malo(c):
-    """Motores con problemas de correa/cadena de distribución que Lorenzo descarta:
-    PureTech 1.2 (correa en aceite) y 1.5 BlueHDi / 1.5D (cadena), en Peugeot, Citroën y Opel.
-    Se aceptan 1.6 BlueHDi, 2.0 BlueHDi y los dCi de Renault."""
+    """Motores con problemas de correa/cadena de distribución que Lorenzo descarta."""
     t = ((c.get("version") or "") + " " + (c.get("modelo") or "")).lower().replace(",", ".")
     marca = (c.get("marca") or "").lower()
     if "puretech" in t: return True
     if marca in ("peugeot", "opel", "citroen", "citroën"):
-        if re.search(r"1\.2\b", t) and c.get("combustible") != "Diésel": return True   # 1.2 Turbo = PureTech
-        if re.search(r"1\.5\s*(bluehdi|d\b|cdti|diesel|diésel|hdi)", t) or (re.search(r"1\.5\b", t) and c.get("combustible") == "Diésel"):
-            return True
+        # Solo valen los diésel 1.6 BlueHDi/CDTi (correa sin problemas) y 2.0 BlueHDi.
+        # Fuera: gasolina (PureTech 1.2 y THP 1.6 con cadena problemática) y 1.5 BlueHDi (cadena);
+        # si no pone la cilindrada, en 2018+ es el 1.5.
+        if c.get("combustible") != "Diésel": return True
+        if re.search(r"1\.5", t): return True
+        if re.search(r"\b(1\.6|2\.0)|132\s*kw|180\s*cv|177\s*cv", t): return False
+        return (c.get("anio") or 0) >= 2018
     return False
 
 def get(url):
