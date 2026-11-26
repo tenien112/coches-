@@ -83,7 +83,7 @@ def flexicar(marca, modelo, pref):
                 "cuota": v.get("quotaPrice"), "combustible": norm_fuel(v.get("fuel")),
                 "cambio": v.get("transmission"), "lugar": v.get("carDealership"),
                 "reservado": bool(v.get("reserved")), "foto": v.get("image"),
-                "url": f"https://www.flexicar.es/{v.get('slug')}/", "pref": pref})
+                "url": f"https://www.flexicar.es/coches-ocasion/{v.get('slug')}", "pref": pref})
         if not vs or nuevos == 0: break
         page += 1
         time.sleep(1.5)

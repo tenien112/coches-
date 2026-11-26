@@ -102,6 +102,8 @@ const FAV_INICIALES=[
 let DATOS=null,VISTA="todos";
 let FAVS=(()=>{try{return JSON.parse(store("coches_favs"))||null}catch(e){return null}})();
 if(!FAVS){FAVS={};FAV_INICIALES.forEach(c=>FAVS[c.id]=c);guardaFavs()}
+// Arreglo de enlaces de Flexicar guardados con el formato antiguo (daban error)
+Object.values(FAVS).forEach(c=>{if(c.web==="Flexicar"&&c.id.startsWith("fx")&&!c.url.includes("/coches-ocasion/"))c.url=c.url.replace("flexicar.es/","flexicar.es/coches-ocasion/").replace(/\/$/,"")});
 function guardaFavs(){store("coches_favs",JSON.stringify(FAVS));$("nFav")&&($("nFav").textContent="("+Object.keys(FAVS).length+")")}
 function chip(b){b.classList.toggle("on");pinta()}
 function vista(v){VISTA=v;$("tTodos").classList.toggle("on",v==="todos");$("tFav").classList.toggle("on",v==="fav");pinta();scrollTo(0,0)}
