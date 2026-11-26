@@ -1,0 +1,132 @@
+[
+ {
+  "url": "https://www.flexicar.es/renault/segunda-mano/",
+  "status": 200,
+  "final": "https://www.flexicar.es/renault/segunda-mano/",
+  "len": 584643,
+  "title": "▷ 1.231 Renault de Segunda Mano | Flexicar"
+ },
+ {
+  "url": "https://www.flexicar.es/renault/segunda-mano/?page=2",
+  "status": 200,
+  "final": "https://www.flexicar.es/renault/segunda-mano/?page=2",
+  "len": 584654,
+  "title": "▷ 1.231 Renault de Segunda Mano | Flexicar"
+ },
+ {
+  "url": "https://www.flexicar.es/combustible-diesel/renault/segunda-mano/",
+  "status": 404,
+  "final": "https://www.flexicar.es/404/",
+  "len": 43473,
+  "title": "Flexicar - Para comprar o vender tu coche, primero en flexicar.es"
+ },
+ {
+  "url": "https://www.flexicar.es/renault/megane/segunda-mano/",
+  "status": 200,
+  "final": "https://www.flexicar.es/renault/megane/segunda-mano/",
+  "len": 580120,
+  "title": "▷ Renault Mégane de Segunda Mano: 156 desde 6.990 € | Flexicar"
+ },
+ {
+  "url": "https://www.autohero.com/es/search/?brand0=renault&page=2",
+  "status": 200,
+  "final": "https://www.autohero.com/es/search/?brand0=renault&page=2",
+  "len": 890947,
+  "title": "Favoritos"
+ },
+ {
+  "url": "https://www.kia.com/es/quiero-un-kia/oferta-comercial/",
+  "status": 200,
+  "final": "https://www.kia.com/es/quiero-un-kia/oferta-comercial/",
+  "len": 208831,
+  "title": "Pide tu oferta de coche nuevo | Kia Iberia"
+ },
+ {
+  "js": "/_next/static/chunks/main-62339f53b03121ed.js",
+  "api": "https://fonts.googleapis.com/"
+ },
+ {
+  "js": "/_next/static/chunks/main-62339f53b03121ed.js",
+  "api": "https://fonts.googleapis.com/css"
+ },
+ {
+  "js": "/_next/static/chunks/main-62339f53b03121ed.js",
+  "api": "/api/"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/vender-coche-rapid-cordoba.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://maps.googleapis.com/maps/api/geocode/json"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/vender-coche-rapido.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "http://localhost:3000/api/auth"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-granada.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.pt/mediamkt/imagenes/tasar-coche/avaliar-carros-maneira-rapida.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://zc-api.flexicar.es"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/tasar-coche-rapido.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-malaga.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-vigo.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-madrid.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://youtube.googleapis.com/v/0bTTRavAOf8"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-barcelona.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "https://www.flexicar.es/media/imagenes/compramos-tu-coche-rapido-salamanca.jpg"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "/api/auth/signin?"
+ },
+ {
+  "js": "/_next/static/chunks/pages/_app-959c4fb51cad2be7.js",
+  "api": "/api/v1"
+ },
+ {
+  "js": "/_next/static/chunks/7237.727662f2f0b1adcb.js",
+  "api": "/api/vehicle-pdf/"
+ },
+ {
+  "js": "/_next/static/chunks/6298-70909f3b2944365a.js",
+  "api": "/api/vehicle-pdf/"
+ }
+]
