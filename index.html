@@ -51,6 +51,12 @@ a.ir{color:#111;background:var(--azul);text-decoration:none;font-weight:800;padd
 .otras{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .otras a{color:var(--tx);background:var(--card2);padding:8px 10px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px}
 .nota{width:100%;margin-top:8px;background:var(--card2);color:var(--tx);border:1px solid #2c3a4d;border-radius:8px;padding:7px;font-size:13px}
+#btnSub{display:block;width:calc(100% - 24px);margin:10px 12px 0;padding:12px;border:none;border-radius:12px;background:#6c3fb5;color:#fff;font-weight:900;font-size:15px}
+#panSub{display:none;margin:10px 12px 0;background:var(--card);border:1px solid #6c3fb5;border-radius:12px;padding:12px;font-size:13px;color:var(--mut)}
+#panSub.ver{display:block}#panSub b{color:var(--tx)}
+#panSub .otras a{background:#3b2463}
+#panSub input,#panSub select{background:var(--card2);color:var(--tx);border:1px solid #2c3a4d;border-radius:8px;padding:7px;font-size:14px}
+#calcRes{margin-top:6px;font-size:15px;color:var(--tx)}
 #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#273445;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;transition:.3s;z-index:20;max-width:90%;text-align:center}
 #toast.ver{opacity:1}
 footer{color:var(--mut);text-align:center;font-size:12px;padding:16px}
@@ -78,6 +84,23 @@ footer{color:var(--mut);text-align:center;font-size:12px;padding:16px}
   <button class="chip on" id="fDiesel" onclick="chip(this)">Solo diésel</button>
   <button class="chip" id="fSinFin" onclick="chip(this)">Sin financiar (≤10.000 €)</button>
   <select id="fModelo" onchange="pinta()"><option value="">Todos los modelos</option></select>
+</div>
+<button id="btnSub" onclick="$('panSub').classList.toggle('ver')">🔨 CONSULTAR EN LAS DOS PLATAFORMAS DE SUBASTAS</button>
+<div id="panSub">
+  <b>Escrapalia</b> (subastas de coches de renting, bancos y empresas; pueden pujar particulares):
+  <div class="otras">
+    <a href="https://www.escrapalia.com/es/" target="_blank" rel="noopener">Abrir Escrapalia ↗</a>
+    <a href="https://www.google.com/search?q=site%3Aescrapalia.com+renault+megane+dci" target="_blank" rel="noopener">Mégane dCi ↗</a>
+    <a href="https://www.google.com/search?q=site%3Aescrapalia.com+renault+kadjar+dci" target="_blank" rel="noopener">Kadjar dCi ↗</a>
+    <a href="https://www.google.com/search?q=site%3Aescrapalia.com+renault+captur+dci" target="_blank" rel="noopener">Captur dCi ↗</a>
+  </div>
+  <div style="margin-top:6px">⚠ Sin garantía, «como está y donde está». +15 % de comisión, +350-375 € + IVA de transferencia y, si la ficha lo pone, +21 % de IVA (si pone REBU, sin IVA). El vendedor puede rechazar la puja en 96 h.</div>
+  <div style="margin-top:12px"><b>Ayvens</b> (coches de renting a precio fijo para particulares, con historial de mantenimiento):
+  <div class="otras"><a href="https://www.ayvens.com/es-es/nuestros-vehiculos/ayvens-compra-seminuevos-particulares/" target="_blank" rel="noopener">Abrir Ayvens particulares ↗</a></div></div>
+  <div style="margin-top:12px"><b>Calcula lo que te cuesta de verdad una puja:</b><br>
+    <input id="calcPuja" type="number" inputmode="numeric" placeholder="Puja en €" style="width:120px" oninput="calcSub()">
+    <select id="calcIva" onchange="calcSub()"><option value="0">REBU (sin IVA)</option><option value="1">Con IVA 21 %</option></select>
+    <div id="calcRes"></div></div>
 </div>
 <div id="lista"></div>
 <div style="padding:0 12px">
@@ -141,6 +164,9 @@ if(!FAVS){FAVS={};FAV_INICIALES.forEach(c=>FAVS[c.id]=c);guardaFavs()}
 // Arreglo de enlaces de Flexicar guardados con el formato antiguo (daban error)
 Object.values(FAVS).forEach(c=>{if(c.web==="Flexicar"&&c.id.startsWith("fx")&&!c.url.includes("/coches-ocasion/"))c.url=c.url.replace("flexicar.es/","flexicar.es/coches-ocasion/").replace(/\/$/,"")});
 function guardaFavs(){store("coches_favs",JSON.stringify(FAVS));$("nFav")&&($("nFav").textContent="("+Object.keys(FAVS).length+")")}
+function calcSub(){const p=+$("calcPuja").value||0,iva=$("calcIva").value==="1";if(!p){$("calcRes").textContent="";return}
+  const com=p*0.15,base=p+com,tot=Math.round((iva?base*1.21:base)+375*1.21);
+  $("calcRes").innerHTML=`Total aprox.: <b>${eur(tot)}</b> (comisión ${eur(Math.round(com))}${iva?", IVA "+eur(Math.round(base*0.21)):""}, transferencia ${eur(454)})`}
 function chip(b){b.classList.toggle("on");pinta()}
 function vista(v){VISTA=v;$("tTodos").classList.toggle("on",v==="todos");$("tFav").classList.toggle("on",v==="fav");pinta();scrollTo(0,0)}
 function fav(id){
