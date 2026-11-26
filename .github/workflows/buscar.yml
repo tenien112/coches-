@@ -1,0 +1,23 @@
+name: buscar-coches
+on:
+  schedule:
+    - cron: '17 7,13,19 * * *'
+  workflow_dispatch:
+  push:
+    paths: ['scripts/buscar.py','.github/workflows/buscar.yml']
+permissions:
+  contents: write
+concurrency: buscar
+jobs:
+  buscar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install requests
+      - run: python scripts/buscar.py
+        env:
+          NTFY_TOPIC: coches-lorenzito-3a630b76
+      - run: |
+          git config user.name "coches-bot"; git config user.email "bot@users.noreply.github.com"
+          git pull -q --rebase || true
+          git add datos; git commit -m "COCHES: datos actualizados" || true; git push
