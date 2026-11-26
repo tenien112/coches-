@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10161f">
+<meta name="copyright" content="© Lorenzo Moreno Villalba">
+<title>COCHES-LORENZITO</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#10161f;--card:#18212d;--card2:#202b39;--tx:#eef2f6;--mut:#93a1b1;--nar:#f39c12;--ok:#2ecc71;--mal:#ff7a7a;--azul:#5dade2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 system-ui,-apple-system,Roboto,sans-serif;padding-bottom:70px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 14px 8px;border-bottom:1px solid #263243}
+h1{margin:0;font-size:20px;letter-spacing:.5px}h1 span{color:var(--nar)}
+#act{color:var(--mut);font-size:12px;margin-top:2px}
+.tabs{display:flex;gap:8px;margin-top:10px}
+.tab{flex:1;padding:9px;border-radius:10px;border:1px solid #2c3a4d;background:var(--card);color:var(--tx);font-weight:700;font-size:14px}
+.tab.on{background:var(--nar);color:#111;border-color:var(--nar)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px 0}
+select,.chip{background:var(--card);color:var(--tx);border:1px solid #2c3a4d;border-radius:20px;padding:7px 12px;font-size:13px}
+.chip.on{background:#3a2a0c;border-color:var(--nar);color:var(--nar);font-weight:700}
+#lista{padding:10px 12px;display:flex;flex-direction:column;gap:12px}
+.coche{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid #243041;position:relative}
+.coche.fav{border-color:var(--nar)}
+.foto{width:100%;aspect-ratio:16/9;object-fit:cover;background:#0b0f15;display:block}
+.cuerpo{padding:10px 12px 12px}
+.tit{font-weight:800;font-size:17px}
+.ver{color:var(--mut);font-size:13px;margin-top:1px}
+.datos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.dato{background:var(--card2);border-radius:8px;padding:3px 8px;font-size:13px}
+.dato.di{color:var(--ok);font-weight:700}
+.precio{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pc{font-size:24px;font-weight:900}
+.fin{font-size:13px;font-weight:700;padding:3px 8px;border-radius:8px}
+.fin.si{background:#3a1f1f;color:var(--mal)}.fin.no{background:#173a26;color:var(--ok)}
+.pf{color:var(--mut);font-size:12px;margin-top:2px}
+.pie{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px}
+.web{font-size:12px;color:var(--mut)}
+a.ir{color:#111;background:var(--azul);text-decoration:none;font-weight:800;padding:8px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
+.estrella{position:absolute;top:8px;right:8px;width:46px;height:46px;border-radius:50%;border:none;background:rgba(0,0,0,.6);font-size:24px;color:#fff}
+.estrella.on{background:var(--nar)}
+.nuevo{position:absolute;top:10px;left:10px;background:var(--ok);color:#111;font-weight:900;font-size:12px;padding:3px 8px;border-radius:8px}
+.res{position:absolute;top:10px;left:10px;background:var(--mal);color:#111;font-weight:900;font-size:12px;padding:3px 8px;border-radius:8px}
+.puesto{color:var(--nar);font-weight:900;margin-right:4px}
+.aviso{background:var(--card);border-radius:12px;padding:12px;color:var(--mut);font-size:13px}
+.otras{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.otras a{color:var(--tx);background:var(--card2);padding:8px 10px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px}
+.nota{width:100%;margin-top:8px;background:var(--card2);color:var(--tx);border:1px solid #2c3a4d;border-radius:8px;padding:7px;font-size:13px}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#273445;color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;transition:.3s;z-index:20;max-width:90%;text-align:center}
+#toast.ver{opacity:1}
+footer{color:var(--mut);text-align:center;font-size:12px;padding:16px}
+#btnAct{position:fixed;right:14px;bottom:14px;background:var(--nar);color:#111;border:none;font-weight:900;border-radius:24px;padding:12px 16px;z-index:6;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚗 COCHES-<span>LORENZITO</span></h1>
+  <div id="act">Cargando…</div>
+  <div class="tabs">
+    <button class="tab on" id="tTodos" onclick="vista('todos')">TODOS <span id="nTodos"></span></button>
+    <button class="tab" id="tFav" onclick="vista('fav')">⭐ FAVORITOS <span id="nFav"></span></button>
+  </div>
+</header>
+<div class="ctrl" id="ctrl">
+  <select id="orden" onchange="pinta()">
+    <option value="puntos">Ordenar: los que mejor encajan</option>
+    <option value="precio">Más baratos</option>
+    <option value="km">Menos km</option>
+    <option value="anio">Más nuevos</option>
+    <option value="financiar">Menos a financiar</option>
+  </select>
+  <button class="chip on" id="fDiesel" onclick="chip(this)">Solo diésel</button>
+  <button class="chip" id="fSinFin" onclick="chip(this)">Sin financiar (≤10.000 €)</button>
+  <select id="fModelo" onchange="pinta()"><option value="">Todos los modelos</option></select>
+</div>
+<div id="lista"></div>
+<div style="padding:0 12px">
+  <div class="aviso">Estas webs no se pueden revisar solas (bloquean la búsqueda automática o no publican precios). Míralas a mano:
+    <div class="otras">
+      <a href="https://www.renault.es/coches-ocasion.html" target="_blank" rel="noopener">Renault ocasión ↗</a>
+      <a href="https://www.kia.com/es/quiero-un-kia/oferta-comercial/" target="_blank" rel="noopener">Ofertas Kia ↗</a>
+    </div>
+  </div>
+</div>
+<footer>COCHES-LORENZITO · by Lorenzo<br>© Lorenzo Moreno Villalba<br><span id="ver"></span></footer>
+<button id="btnAct" onclick="carga(true)">⟳ ACTUALIZAR</button>
+<div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const store=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+const eur=n=>n==null?"?":n.toLocaleString("es-ES")+" €";
+const kms=n=>n==null?"? km":n.toLocaleString("es-ES")+" km";
+function toast(t,ms=3000){const e=$("toast");e.textContent=t;e.classList.add("ver");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("ver"),ms)}
+// Favoritos que ya tenía apuntados (búsqueda del 25/11/2026)
+const FAV_INICIALES=[
+ {id:"ini-estepona",web:"Flexicar",marca:"Renault",modelo:"Mégane Sport Tourer (ranchera)",version:"Business Blue dCi 115",anio:2021,km:79432,precio:11990,combustible:"Diésel",lugar:"Estepona",url:"https://www.flexicar.es/renault/megane/segunda-mano/",financiar:1990,nota:"Mi favorita (25/11)"},
+ {id:"ini-paterna",web:"Flexicar",marca:"Renault",modelo:"Kadjar",version:"Blue dCi 150",anio:2019,km:90000,precio:14490,combustible:"Diésel",lugar:"Paterna",url:"https://www.flexicar.es/renault/kadjar/segunda-mano/",financiar:4490,nota:"Vista el 25/11"},
+ {id:"ini-ahkadjar",web:"Autohero",marca:"Renault",modelo:"Kadjar",version:"Intens Blue dCi",anio:2020,km:99271,precio:14199,combustible:"Diésel",lugar:"Entrega a domicilio",url:"https://www.autohero.com/es/search/?brand0=renault&models0=kadjar",financiar:4199,nota:"Vista el 25/11"}
+];
+let DATOS=null,VISTA="todos";
+let FAVS=(()=>{try{return JSON.parse(store("coches_favs"))||null}catch(e){return null}})();
+if(!FAVS){FAVS={};FAV_INICIALES.forEach(c=>FAVS[c.id]=c);guardaFavs()}
+function guardaFavs(){store("coches_favs",JSON.stringify(FAVS));$("nFav")&&($("nFav").textContent="("+Object.keys(FAVS).length+")")}
+function chip(b){b.classList.toggle("on");pinta()}
+function vista(v){VISTA=v;$("tTodos").classList.toggle("on",v==="todos");$("tFav").classList.toggle("on",v==="fav");pinta();scrollTo(0,0)}
+function fav(id){
+  if(FAVS[id]){delete FAVS[id];toast("Quitado de favoritos")}
+  else{const c=(DATOS?.coches||[]).find(x=>x.id===id);if(!c)return;FAVS[id]={...c,guardado:new Date().toISOString()};toast("⭐ Guardado en favoritos")}
+  guardaFavs();pinta()
+}
+function nota(id,t){if(FAVS[id]){FAVS[id].nota=t;guardaFavs()}}
+function ficha(c,i,esFav){
+  const vivo=!DATOS||!esFav||(DATOS.coches||[]).some(x=>x.id===c.id)||c.id.startsWith("ini-");
+  const finan=c.financiar>0?`<span class="fin si">Financiar ${eur(c.financiar)}</span>`:`<span class="fin no">✅ Sin financiar</span>`;
+  const esNuevo=DATOS&&!esFav&&c.visto===DATOS.hoy&&DATOS.hayPrevios;
+  return `<div class="coche ${FAVS[c.id]?"fav":""}">
+   ${c.foto?`<img class="foto" loading="lazy" src="${c.foto}" alt="">`:""}
+   ${c.reservado?'<span class="res">RESERVADO</span>':esNuevo?'<span class="nuevo">NUEVO</span>':""}
+   ${!vivo?'<span class="res">YA NO APARECE</span>':""}
+   <button class="estrella ${FAVS[c.id]?"on":""}" onclick="fav('${c.id}')" aria-label="Favorito">${FAVS[c.id]?"★":"☆"}</button>
+   <div class="cuerpo" ${c.foto?"":'style="padding-top:16px;padding-right:62px"'}>
+    <div class="tit">${esFav?"":`<span class="puesto">${i+1}.</span>`}${c.marca||""} ${c.modelo||""}</div>
+    <div class="ver">${c.version||""}</div>
+    <div class="datos">
+     <span class="dato">${c.anio||"?"}</span><span class="dato">${kms(c.km)}</span>
+     <span class="dato ${c.combustible==="Diésel"?"di":""}">${c.combustible||"?"}</span>
+     ${c.cambio?`<span class="dato">${c.cambio}</span>`:""}
+    </div>
+    <div class="precio"><span class="pc">${eur(c.precio)}</span>${finan}</div>
+    ${c.precio_fin?`<div class="pf">Precio financiando con ellos: ${eur(c.precio_fin)}${c.cuota?` (desde ${c.cuota} €/mes)`:""}</div>`:""}
+    ${esFav?`<input class="nota" placeholder="Apunta algo (llamar, preguntar…)" value="${(c.nota||"").replace(/"/g,"&quot;")}" onchange="nota('${c.id}',this.value)">`:""}
+    <div class="pie"><span class="web">${c.web} · ${c.lugar||""}</span><a class="ir" href="${c.url}" target="_blank" rel="noopener">Ver coche ↗</a></div>
+   </div></div>`;
+}
+function pinta(){
+  const ord=$("orden").value,soloD=$("fDiesel").classList.contains("on"),sinF=$("fSinFin").classList.contains("on"),mod=$("fModelo").value;
+  let L=VISTA==="fav"?Object.values(FAVS):(DATOS?.coches||[]);
+  if(VISTA==="todos"){
+    if(soloD)L=L.filter(c=>c.combustible==="Diésel");
+    if(sinF)L=L.filter(c=>c.financiar===0);
+    if(mod)L=L.filter(c=>(c.marca+" "+c.modelo).toLowerCase().includes(mod));
+  }
+  const k={puntos:c=>-(c.puntos??0),precio:c=>c.precio??9e9,km:c=>c.km??9e9,anio:c=>-(c.anio??0),financiar:c=>c.financiar??9e9}[ord];
+  L=[...L].sort((a,b)=>k(a)-k(b));
+  $("ctrl").style.display=VISTA==="fav"?"none":"flex";
+  $("nTodos").textContent=DATOS?"("+(DATOS.coches||[]).length+")":"";
+  $("lista").innerHTML=L.length?L.map((c,i)=>ficha(c,i,VISTA==="fav")).join(""):
+    `<div class="aviso">${VISTA==="fav"?"Aún no tienes favoritos. Pulsa la ☆ de un coche para guardarlo.":DATOS?"No hay coches con estos filtros.":"Buscando coches… la primera búsqueda tarda unos minutos."}</div>`;
+}
+async function carga(boton){
+  try{
+    const r=await fetch("datos/coches.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw 0;
+    const d=await r.json(),prev=store("coches_act");
+    const fechas=(d.coches||[]).map(c=>c.visto).sort();
+    d.hoy=fechas[fechas.length-1];d.hayPrevios=fechas[0]!==d.hoy;
+    DATOS=d;store("coches_act",d.actualizado);
+    const h=new Date(d.actualizado);
+    $("act").textContent=`${d.coches.length} coches de ${eur(d.criterios.min)} a ${eur(d.criterios.max)} · revisado ${h.toLocaleString("es-ES",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}`+(d.fallos?.length?" · ⚠ sin datos: "+d.fallos.join(", "):"");
+    const mods=[...new Set(d.coches.map(c=>(c.marca+" "+c.modelo.split(" ")[0]).trim()))].sort();
+    const sel=$("fModelo"),v=sel.value;sel.innerHTML='<option value="">Todos los modelos</option>'+mods.map(m=>`<option value="${m.toLowerCase()}">${m}</option>`).join("");sel.value=v;
+    if(boton)toast(prev===d.actualizado?"Ya tienes lo último (se revisa 3 veces al día)":"Coches actualizados");
+  }catch(e){$("act").textContent="La primera búsqueda aún no ha terminado";if(boton)toast("Aún no hay datos, prueba en unos minutos")}
+  pinta();
+}
+guardaFavs();carga(false);
+// ---------- Aviso de actualización ----------
+function huella(t){let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)+"-"+t.length}
+async function huellaPublicada(){const t=await (await fetch("index.html?t="+Date.now(),{cache:"no-store"})).text();return huella(t)}
+let HUELLA_CARGADA=null;
+(async()=>{try{
+  const h=await huellaPublicada();HUELLA_CARGADA=h;
+  const prev=store("coches_huella");store("coches_huella",h);
+  if(prev!==null&&prev!==h)toast("✅ COCHES-LORENZITO se ha actualizado",5000);
+}catch(e){}})();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{})}
+async function buscarVersionNueva(){try{const h=await huellaPublicada();if(HUELLA_CARGADA&&h!==HUELLA_CARGADA)location.reload()}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){buscarVersionNueva();carga(false)}});
+setInterval(()=>{if(!document.hidden)buscarVersionNueva()},10*60*1000);
+</script>
+<script>fetch("sw.js",{cache:"no-cache"}).then(r=>r.text()).then(t=>{const m=t.match(/coches-v(\d+)/);document.getElementById("ver").textContent=m?"versión "+m[1]:""}).catch(()=>{})</script>
+</body>
+</html>

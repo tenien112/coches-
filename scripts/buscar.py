@@ -102,7 +102,10 @@ def autohero(marca, modelo, pref):
             img = re.search(r'<img src="([^"]+)"', c)
             href = re.search(r'href="(/es/[^"]+/id/[^"]+)"', t[t.find(idm.group(1)) - 400:t.find(idm.group(1)) + 50])
             fin = precios[0] if precios else None
-            contado = precios[1] if len(precios) > 1 else fin
+            contado = fin
+            if "Al contado" in txt:
+                k = txt.index("Al contado")
+                contado = next((num(s) for s in txt[k + 1:k + 4] if s.endswith("€")), fin)
             nuevos += 1
             out.append({
                 "id": vid, "web": "Autohero", "marca": marca.capitalize(),
