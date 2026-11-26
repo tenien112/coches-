@@ -14,6 +14,10 @@ MODELOS = [
     ("renault", "megane", "megane", 1),
     ("renault", "kadjar", "kadjar", 2),
     ("renault", "captur", "captur", 3),
+    ("peugeot", "2008", "2008", 3),
+    ("peugeot", "3008", "3008", 3),
+    ("opel", "grandland-x", "grandland x", 3),
+    ("opel", "grandland", "grandland", 3),
     ("kia", "ceed", "ceed", 4),
     ("kia", "sportage", "sportage", 4),
     ("kia", "niro", "niro", 5),
@@ -28,9 +32,18 @@ def norm_fuel(f):
     if "eléctr" in f or "electr" in f: return "Eléctrico"
     return (f or "?").capitalize()
 
-def motor_malo(txt):
-    t = (txt or "").lower()
-    return "bluehdi" in t or "puretech" in t
+def motor_malo(c):
+    """Motores con problemas de correa/cadena de distribución que Lorenzo descarta:
+    PureTech 1.2 (correa en aceite) y 1.5 BlueHDi / 1.5D (cadena), en Peugeot, Citroën y Opel.
+    Se aceptan 1.6 BlueHDi, 2.0 BlueHDi y los dCi de Renault."""
+    t = ((c.get("version") or "") + " " + (c.get("modelo") or "")).lower().replace(",", ".")
+    marca = (c.get("marca") or "").lower()
+    if "puretech" in t: return True
+    if marca in ("peugeot", "opel", "citroen", "citroën"):
+        if re.search(r"1\.2\b", t) and c.get("combustible") != "Diésel": return True   # 1.2 Turbo = PureTech
+        if re.search(r"1\.5\s*(bluehdi|d\b|cdti|diesel|diésel|hdi)", t) or (re.search(r"1\.5\b", t) and c.get("combustible") == "Diésel"):
+            return True
+    return False
 
 def get(url):
     for i in range(3):
@@ -122,6 +135,41 @@ def autohero(marca, modelo, pref):
         time.sleep(1.5)
     return out
 
+# ---------------- RENAULT OCASIÓN (renew) ----------------
+def renew(modelo, pref):
+    from urllib.parse import quote
+    url = (f"https://es.renew.auto/vehiculos.html?brand.label.raw=RENAULT&model.label.raw={quote(modelo)}"
+           f"&energy.groupLabel.raw={quote('diésel')}")
+    t = get(url)
+    out = []
+    for c in t.split('class="UCICard__link"')[1:]:
+        c = c[:9000]
+        href = re.search(r'href="([^"]+)"', c)
+        if not href: continue
+        c2 = re.sub(r"<svg.*?</svg>", "", c, flags=re.S)
+        txt = [html.unescape(x).strip() for x in re.sub(r"<[^>]+>", "|", c2).split("|")]
+        txt = [x for x in txt if x and not x.startswith("<") and "=" not in x]
+        def num(x): return int(re.sub(r"[^\d]", "", x)) if re.search(r"\d", x) else None
+        precio = next((num(x) for x in txt if x.endswith("€")), None)
+        fecha = next((x for x in txt if re.fullmatch(r"\d{1,2}/(19|20)\d\d", x)), "")
+        km = None
+        if "KM" in txt:
+            k = txt.index("KM"); km = num(txt[k - 1])
+        lugar = ""
+        if "descúbrelo" in txt:
+            k = txt.index("descúbrelo"); lugar = txt[k + 1] if k + 1 < len(txt) else ""
+        tit = txt[0] if txt else ""
+        pid = re.search(r"productId=([A-Z0-9_]+)", href.group(1))
+        out.append({
+            "id": "rn" + (pid.group(1) if pid else href.group(1)), "web": "Renault ocasión", "marca": "Renault",
+            "modelo": tit.split(" - ", 1)[1].title() if " - " in tit else modelo.title(),
+            "version": txt[1] if len(txt) > 1 else "", "anio": int(fecha.split("/")[1]) if fecha else None,
+            "km": km, "precio": precio, "precio_fin": None, "cuota": None,
+            "combustible": norm_fuel(txt[2] if len(txt) > 2 else ""), "cambio": txt[3] if len(txt) > 3 else "",
+            "lugar": lugar.title(), "reservado": False, "foto": None,
+            "url": "https://es.renew.auto" + href.group(1), "pref": pref})
+    return out
+
 def puntua(c):
     """Más puntos = mejor para Lorenzo."""
     p = 100 - c["pref"] * 8
@@ -149,12 +197,19 @@ def main():
                 todos += r
             except Exception as e:
                 print("FALLO", web, marca, mod, e); fallos.append(f"{web} {mod}")
+    for mod, pref in (("MEGANE", 1), ("MEGANE SPORT TOURER", 1), ("KADJAR", 2), ("CAPTUR", 3)):
+        try:
+            r = renew(mod, pref); print("Renault ocasión", mod, len(r)); todos += r
+        except Exception as e:
+            print("FALLO renew", mod, e); fallos.append(f"Renault ocasión {mod.title()}")
+    vistos = set()
+    todos = [c for c in todos if not (c["id"] in vistos or vistos.add(c["id"]))]
     coches = []
     hoy = datetime.date.today().isoformat()
     for c in todos:
         if not c["precio"] or not (PMIN <= c["precio"] <= PMAX or (c["precio_fin"] and PMIN <= c["precio_fin"] <= PMAX)):
             continue
-        if motor_malo(c["version"]): continue
+        if motor_malo(c): continue
         c["financiar"] = max(0, c["precio"] - ENTRADA)
         c["puntos"] = puntua(c)
         c["visto"] = prev.get(c["id"], {}).get("visto", hoy)
